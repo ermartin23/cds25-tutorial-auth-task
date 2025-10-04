@@ -1,7 +1,13 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using DataAccess.Repositories;
 using Entities = DataAccess.Entities;
 using Requests = Api.Models.Dtos.Requests;
 using Responses = Api.Models.Dtos.Responses;
+
+namespace Api.Services;
 
 public interface IDraftService
 {
@@ -17,7 +23,7 @@ public class DraftService(
     IRepository<Entities.User> _userRepository
 ) : IDraftService
 {
-    public static string[] AllowedRoles => [Role.Admin, Role.Editor];
+    public static Entities.Role[] AllowedRoles => [Entities.Role.Admin, Entities.Role.Editor];
 
     public Responses.DraftDetail GetById(long id)
     {
@@ -56,8 +62,8 @@ public class DraftService(
         {
             Title = data.Title,
             Content = data.Content,
-            AuthorId = null, // TODO fix
-            PublishedAt = data.Publish ?? false ? DateTime.UtcNow : null,
+            AuthorId = null,
+            PublishedAt = data.Publish ?? false ? DateTime.UtcNow : (DateTime?)null,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };

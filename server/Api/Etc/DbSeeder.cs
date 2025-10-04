@@ -9,7 +9,7 @@ public class DbSeeder(
 //, IPasswordHasher<User> hasher
 )
 {
-    public async Task SetupAsync(String defaultPassword)
+    public async Task SetupAsync(string defaultPassword)
     {
         context.Database.EnsureCreated();
         if (!context.Users.Any())
@@ -40,8 +40,7 @@ Have you ever wondered how to make a hello-world application in Python?
 The answer is simply:
 ```py
 print('Hello World!')
-```
-                    ",
+```",
                     AuthorId = admin!.Id,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
@@ -80,7 +79,7 @@ print('Hello World!')
         }
     }
 
-    private async Task CreateUsers((string email, string role)[] users, string defaultPassword)
+    private async Task CreateUsers((string email, Role role)[] users, string defaultPassword)
     {
         foreach (var user in users)
         {

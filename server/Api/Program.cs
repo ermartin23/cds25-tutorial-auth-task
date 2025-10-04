@@ -7,6 +7,8 @@ using DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Microsoft.AspNetCore.Identity;
+using Api.Security;
 
 namespace Api;
 
@@ -49,17 +51,14 @@ public class Program
         // Services
         builder.Services.AddScoped<IBlogService, BlogService>();
         builder.Services.AddScoped<IDraftService, DraftService>();
+        builder.Services.AddScoped<IPasswordHasher<User>, BcryptPasswordHasher>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
 
+        // Controllers
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+        // OpenAPI (mínimo)
         builder.Services.AddOpenApi();
-        builder.Services.AddOpenApiDocument(conf =>
-        {
-            conf.DocumentProcessors.Add(new TypeMapDocumentProcessor<ProblemDetails>());
-            conf.SchemaSettings.AlwaysAllowAdditionalObjectProperties = false;
-            conf.SchemaSettings.GenerateAbstractProperties = true;
-            conf.SchemaSettings.SchemaProcessors.Add(new RequiredSchemaProcessor());
-        });
 
         // Exception handling
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -77,16 +76,14 @@ public class Program
 
     public static WebApplication ConfigureApp(WebApplication app)
     {
-        // Configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
         }
-        // app.UseHttpsRedirection();
+
         app.UseExceptionHandler();
-
         app.UseAuthorization();
-
         app.MapControllers();
 
         app.GenerateApiClientsFromOpenApi("/../../client/src/models/generated-client.ts").Wait();
